@@ -1,0 +1,6 @@
+.rc-star-rating {
+	width: 18px;
+	height: 18px;
+	float: left;
+	background: url("star2.gif") no-repeat;
+}

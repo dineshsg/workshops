@@ -1,0 +1,863 @@
+<?php
+
+function workshops_perm() {
+	return array('Workshop Organiser Adding','Workshop Add New College', 'Workshop Get College', 'Workshop Admin List', 'Workshop Organiser College', 'Workshop Request', 'Workshop Request List', 'Test Request', 'Test Request List', 'Test Admin List', 'Workshop Detail', 'Feedback', 'ajax request', 'Academic Center', 'Edit Organiser Details', 'Report Public View', 'Workshop Invigilator Adding', 'Invigilate Test Request List', 'Workshop Completed List', 'Test Completed List', 'Live Workshop Completed List', 'Live Workshop Completed Detail', 'Live Feedback', 'Check Marks', 'Learner Certificate', 'Download Certificate');
+}
+
+function workshops_menu(){
+
+	$items = array();
+
+	$items['workshops/aworkshop_request'] = array(
+		'title' => 'Live Workshop Request',
+		'description' => 'Workshop Admin List',
+		'page callback' => 'aworkshops_workshop_request',
+		'access arguments' => array('Workshop Request'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'aworkshop_request.inc',
+	);
+
+	$items['workshops/college'] = array(
+		'title' => 'College/School Details',
+   		'description' => 'college details',
+   		'page callback' => 'drupal_get_form',
+   		'page callback' => 'workshops_list_college_details',
+   		'access arguments' => array('Workshop Add New College'),
+   		'file' => 'add_college.inc'
+	);
+	$items['workshops/add_resource_person'] = array(
+		'title' => 'Add New Resource Person',
+		'description' => 'Adding new resource preson\'s detail', 
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('workshops_add_resource_person_form'),
+		'access arguments' => array('Workshop Add New College'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'add_resource_person.inc',
+	);
+	$items['workshops/college/add_college'] = array(
+		'title' => 'Add New College / School Details',
+		'description' => 'Adding new college details detail',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('workshops_add_college_form'),
+		'access arguments' => array('Workshop Add New College'),
+		'type' => MENU_LOCAL_TASK,
+		'file' => 'add_college.inc',
+	);
+	$items['workshops/college/edit_college'] = array(
+		'title' => 'Edit College / School Details',
+		'description' => 'Adding new college details detail',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('workshops_edit_college_form'),
+		'access arguments' => array('Workshop Add New College'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'add_college.inc',
+	);
+	$items['workshops/college/list_college'] = array(
+		'title' => 'Listing College Details',
+		'page callback' => 'workshops_list_college_details',
+		'access arguments' => array('Workshop Add New College'),
+		'type' => MENU_DEFAULT_LOCAL_TASK,
+		'file' => 'add_college.inc',
+	);
+	/*$items['workshops/college/list_school'] = array(
+		'title' => 'Listing School Details',
+		'page callback' => 'workshops_list_school_details',
+		'access arguments' => array('Workshop Add New College'),
+		'type' => MENU_LOCAL_TASK,
+		'file' => 'add_college.inc',
+	);*/
+	$items['workshops/members'] = array(
+		'title' => 'Organiser, Invigilatior Details',
+		'page callback' => 'drupal_get_form',
+   		'page callback' => 'workshops_list_organisers_detail',
+   		'access arguments' => array('Workshop Add New College'),
+   		'file' => 'add_college.inc'
+    );
+	$items['workshops/members/list_organisers'] = array(
+		'title' => 'Listing Organiser Details',
+		'page callback' => 'workshops_list_organisers_detail',
+		'access arguments' => array('Workshop Add New College'),
+		'type' => MENU_LOCAL_TASK,
+		'file' => 'add_college.inc',
+	);
+	$items['workshops/members/list_invigilators'] = array(
+		'title' => 'Listing Invigilator Details',
+		'page callback' => 'workshops_list_invigilators_detail',
+		'access arguments' => array('Workshop Add New College'),
+		'type' => MENU_LOCAL_TASK,
+		'file' => 'add_college.inc',
+	);
+	$items['workshops/edit_invigilator'] = array(
+		'title' => 'Edit Invigilator Details',
+		'page callback' => 'workshops_edit_invigilator',
+		'access arguments' => array('Workshop Add New College'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'invigilator.inc',
+	);
+	$items['workshops/view_invigilator'] = array(
+		'title' => 'Invigilator Details',
+		'page callback' => 'workshops_view_invigilator',
+		'access arguments' => array('Workshop Add New College'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'invigilator.inc',
+	);
+	$items['workshops/pending'] = array(
+		'title' => 'New Requests',
+		'page callback' => 'drupal_get_form',
+   		'page callback' => 'workshops_list_organiser_requests',
+   		'access arguments' => array('Workshop Add New College'),
+   		'file' => 'add_college.inc'
+    );
+	$items['workshops/pending/list_pending_organisers'] = array(
+		'title' => 'New Organiser Requests',
+		'page callback' => 'workshops_list_organiser_requests',
+		'access arguments' => array('Workshop Add New College'),
+		'type' => MENU_DEFAULT_LOCAL_TASK,
+		'file' => 'add_college.inc',
+	);
+	$items['workshops/accept_organiser'] = array(
+		'title' => 'Accept Organiser Details',
+		'page callback' => 'accept_organiser',
+		'access arguments' => array('Edit Organiser Details'),
+		'page arguments' => array(2),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'organiser.inc',
+	);
+	$items['workshops/reject_organiser'] = array(
+		'title' => 'Reject Organiser Details',
+		'page callback' => 'reject_organiser',
+		'access arguments' => array('Edit Organiser Details'),
+		'page arguments' => array(2),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'organiser.inc',
+	);
+	$items['workshops/edit_organiser'] = array(
+		'title' => 'Edit Organiser Details',
+		'page callback' => 'edit_organiser',
+		'access arguments' => array('Edit Organiser Details'),
+		'page arguments' => array(2),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'add_college.inc',
+	);
+	$items['workshops/view_organiser'] = array(
+		'title' => 'Organiser Details',
+		'page callback' => 'view_organiser',
+		'access arguments' => array('Edit Organiser Details'),
+		'page arguments' => array(2),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'add_college.inc',
+	);
+	$items['workshops/college/view_college'] = array(
+		'title' => 'College / School Details',
+		'page callback' => 'workshops_view_college_details',
+		'access arguments' => array('Academic Center'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'add_college.inc',
+	);
+	$items['workshops/college/get_college_details'] = array(
+		'title' => 'Add New College Details',
+		'description' => 'Adding new college details detail',
+		'page callback' => 'get_college_details',
+		'access arguments' => array('Workshop Get College'),
+		'type' => MENU_NORMAL_ITEM,
+	);
+	$items['workshops/add_organiser'] = array(
+		'title' => 'Add Organiser Details',
+		'description' => 'Adding new Organiser details',
+		'page callback' => 'workshops_add_organiser',
+		'access arguments' => array('Workshop Organiser Adding'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'organiser.inc',
+	);
+	$items['workshops/get_academic_details'] = array(
+		'title' => 'Add New College Details',
+		'description' => 'Adding new college details detail',
+		'page callback' => 'get_academic_details',
+		'access arguments' => array('ajax request'),
+		'type' => MENU_NORMAL_ITEM,
+	);
+	$items['workshops/workshop_request'] = array(
+		'title' => 'Workshop Request',
+		'description' => 'Request for workshops',
+		'page callback' => 'workshops_workshop_request',
+		'access arguments' => array('Workshop Request'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'workshop_request.inc',
+	);
+	$items['workshops/list_workshop_request'] = array(
+		'title' => 'List Of Pending Workshop Requests',
+		'page callback' => 'workshops_list_workshop_request',
+		'access arguments' => array('Workshop Request List'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'workshop_request.inc',
+	);
+	$items['workshops/list_workshop_approval'] = array(
+		'title' => 'List Of Approved Workshop Requests',
+		'page callback' => 'workshops_list_workshop_approval',
+		'access arguments' => array('Workshop Request List'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'workshop_request.inc',
+	);
+	$items['workshops/list_workshop_completed'] = array(
+		'title' => 'List Of Completed Workshops',
+		'page callback' => 'workshops_list_workshop_completed',
+		'access arguments' => array('Workshop Completed List'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'workshop_request.inc',
+	);
+	$items['workshops/workshop_confirm'] = array(
+		'title' => 'Confirm Workshop Request Details',
+		'page callback' => 'workshops_workshop_confirm',
+		'access arguments' => array('Workshop Request List'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'workshop_request.inc',
+	);
+	$items['workshops/workshop_delete'] = array(
+		'title' => 'Delete Workshop Request Details',
+		'page callback' => 'workshop_request_delete',
+		'access arguments' => array('Workshop Request List'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'workshop_request.inc',
+	);
+	$items['workshops/workshop_edit'] = array(
+		'title' => 'Edit Workshop Approval Details',
+		'page callback' => 'workshops_workshop_edit',
+		'access arguments' => array('Workshop Request List'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'workshop_request.inc',
+	);
+	$items['workshops/manage_workshops'] = array(
+		'title' => 'List Of Completed Workshops',
+		'page callback' => 'workshops_admin_workshop_completed',
+		'access arguments' => array('Workshop Admin List'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'workshop_request.inc',
+	);
+	$items['workshops/view_workshop'] = array(
+		'title' => 'Workshop Detail',
+		'page callback' => 'workshops_view_workshop',
+		'access arguments' => array('Workshop Completed List'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'workshop_request.inc',
+	);
+	$items['workshops/test_request'] = array(
+		'title' => 'Assessment Test Request',
+		'description' => 'Request for Test',
+		'page callback' => 'workshops_test_request',
+		'access arguments' => array('Test Request'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'test_request.inc',
+	);
+	$items['workshops/list_test_request'] = array(
+		'title' => 'New Assessment Test Requests',
+		'page callback' => 'workshops_list_test_request',
+		'access arguments' => array('Test Request List'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'test_request.inc',
+	);
+	$items['workshops/list_test_approval'] = array(
+		'title' => 'Approved Assessment Test Requests',
+		'page callback' => 'workshops_list_test_approval',
+		'access arguments' => array('Test Request List'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'test_request.inc',
+	);
+	$items['workshops/list_test_completed'] = array(
+		'title' => 'Completed Assessment Tests',
+		'page callback' => 'workshops_list_test_completed',
+		'access arguments' => array('Test Completed List'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'test_request.inc',
+	);
+	$items['workshops/manage_tests'] = array(
+		'title' => 'Approved Assessment Test Requests',
+		'page callback' => 'workshops_admin_test_approval',
+		'access arguments' => array('Test Admin List'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'test_request.inc',
+	);
+	$items['workshops/test_confirm'] = array(
+		'title' => 'Confirm Assessment Test Request Details',
+		'page callback' => 'workshops_test_confirm',
+		'access arguments' => array('Test Request List'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'test_request.inc',
+	);
+	$items['workshops/test_delete'] = array(
+		'title' => 'Delete Assessment Test Request Details',
+		'page callback' => 'workshops_test_delete',
+		'access arguments' => array('Test Request List'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'test_request.inc',
+	);
+	$items['workshops/test_view'] = array(
+		'title' => 'Assessment Test Approval Details',
+		'page callback' => 'workshops_test_view',
+		'access arguments' => array('Test Completed List'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'test_request.inc',
+	);
+	$items['workshops/test_edit'] = array(
+		'title' => 'Edit Assessment Test Approval Details',
+		'page callback' => 'workshops_test_edit',
+		'access arguments' => array('Test Request List'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'test_request.inc',
+	);
+	$items['workshops/test_detail'] = array(
+		'title' => 'Test admin details',
+		'page callback' => 'test_detail',
+		'access arguments' => array('Workshop Detail'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'test_detail.inc'
+	);
+	$items['workshops/workshop_detail'] = array(
+		'title' => 'Workshop details',
+		'page callback' => 'workshop_detail',
+		'access arguments' => array('Workshop Detail'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'workshop_detail.inc'
+	);
+	$items['workshops/get_workshop_details'] = array(
+		'title' => 'Test admin details',
+		'page callback' => 'get_workshop_details',
+		'access arguments' => array('Workshop Detail'),
+		'type' => MENU_NORMAL_ITEM,
+	);
+	$items['workshops/get_feedback_detail'] = array(
+		'title' => 'Add New College Details',
+		'description' => 'Get feedback Details',
+		'page callback' => 'get_feedback_detail',
+		'access arguments' => array('Feedback'),
+		'type' => MENU_NORMAL_ITEM,
+	);
+	$items['workshops/feedback/%/%'] = array(
+		'title' => 'Feedback',
+		'page arguments' => array(2,3),
+		'page callback' => 'view_feedback',
+		'access arguments' => array('Feedback'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'feedback.inc'
+	);
+	$items['workshops/get_lang'] = array(
+		'title' => 'Workshop Detail',
+		'page callback' => 'get_lang',
+		'access arguments' => array('ajax request'),
+		'type' => MENU_NORMAL_ITEM,
+	);
+	// email check
+	$items['workshops/check_email'] = array(
+		'page callback' => 'check_email',
+		'access arguments' => array('ajax request'),
+		'type' => MENU_NORMAL_ITEM,
+	);
+	$items['workshops/resource_center_details'] = array(
+		'title' => 'Resource Centers List',
+		'page callback' => 'resource_center_details',
+		'access arguments' => array('Report Public View'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'resource_center.inc',
+	);
+	$items['workshops/resource_center_view_college'] = array(
+		'title' => 'Resource Center Details',
+		'page callback' => 'resource_center_view_college_details',
+		'access arguments' => array('Report Public View'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'resource_center.inc',
+	);
+	$items['workshops/academic_details'] = array(
+		'title' => 'Academic Centers List',
+		'page callback' => 'academic_details',
+		'access arguments' => array('Academic Center'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'academic_details.inc',
+	);
+	$items['workshops/get_reqs_invigilator'] = array(
+		'title' => 'Get batches list',
+		'page callback' => 'get_reqs_invigilator',
+		'access arguments' => array('ajax request'),
+		'type' => MENU_NORMAL_ITEM,
+	);
+	$items['workshops/get_org_institutions'] = array(
+		'title' => 'Get institutions list',
+		'page callback' => 'get_org_institutions',
+		'access arguments' => array('ajax request'),
+		'type' => MENU_NORMAL_ITEM,
+	);
+	$items['workshops/add_invigilator'] = array(
+		'title' => 'Add Invigilator Details',
+		'description' => 'Adding new Invigilator details',
+		'page callback' => 'workshops_add_invigilator',
+		'access arguments' => array('Workshop Invigilator Adding'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'invigilator.inc',
+	);
+	$items['workshops/accept_invigilator'] = array(
+		'title' => 'Accept Invigilator Details',
+		'page callback' => 'accept_invigilator',
+		'access arguments' => array('Edit Organiser Details'),
+		'page arguments' => array(2),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'invigilator.inc',
+	);
+	$items['workshops/reject_invigilator'] = array(
+		'title' => 'Reject Organiser Details',
+		'page callback' => 'reject_invigilator',
+		'access arguments' => array('Edit Organiser Details'),
+		'page arguments' => array(2),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'invigilator.inc',
+	);
+	$items['workshops/pending/list_pending_invigilators'] = array(
+		'title' => 'New Invigilator Requests',
+		'page callback' => 'workshops_list_invigilator_requests',
+		'access arguments' => array('Workshop Add New College'),
+		'type' => MENU_LOCAL_TASK,
+		'file' => 'invigilator.inc',
+	);
+	$items['workshops/invigilate_pending_test_requests'] = array(
+		'title' => 'Assessment Test Invigilatior Confirmation',
+		'page callback' => 'workshops_invigilate_test_request',
+		'access arguments' => array('Invigilate Test Request List'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'invigilator.inc',
+	);
+	$items['workshops/invigilate_test_confirm'] = array(
+		'title' => 'Confirm Assessment Test Request Details',
+		'page callback' => 'invigilate_test_confirm',
+		'access arguments' => array('Invigilate Test Request List'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'invigilator.inc',
+	);
+	$items['workshops/invigilate_test_delete'] = array(
+		'title' => 'Delete Assessment Test Request Details',
+		'page callback' => 'workshops_test_delete',
+		'access arguments' => array('Invigilate Test Request List'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'test_request.inc',
+	);
+	$items['workshops/invigilate_attendance_test_request'] = array(
+		'title' => 'Assessment Test requests waiting for participants list',
+		'page callback' => 'workshops_invigilate_test_attendance',
+		'access arguments' => array('Invigilate Test Request List'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'invigilator.inc',
+	);
+	$items['workshops/invigilate_fill_test_attendance'] = array(
+		'title' => 'Attendance registration form',
+		'page callback' => 'invigilate_fill_test_attendance',
+		'access arguments' => array('Invigilate Test Request List'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'invigilator.inc',
+	);
+	$items['workshops/save_attendance'] = array(
+		'title' => 'Save Attendance Data',
+		'page callback' => 'invigilate_save_attendance',
+		'access arguments' => array('Invigilate Test Request List'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'invigilator.inc',
+	);
+	$items['workshops/invigilate_ongoing_tests'] = array(
+		'title' => 'Ongoing Assessment Tests',
+		'page callback' => 'workshops_invigilate_ongoing_tests',
+		'access arguments' => array('Invigilate Test Request List'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'invigilator.inc',
+	);
+	$items['workshops/invigilate_close_test'] = array(
+		'title' => 'Close Assessment Test',
+		'page callback' => 'invigilate_close_test',
+		'access arguments' => array('Invigilate Test Request List'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'invigilator.inc',
+	);
+	$items['workshops/list_live_workshop_completed'] = array(
+		'title' => 'List Of Live Completed Workshops',
+		'page callback' => 'workshops_list_live_workshop_completed',
+		'access arguments' => array('Live Workshop Completed List'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'workshop_live.inc',
+	);
+	$items['workshops/view_live_workshop'] = array(
+		'title' => 'Live Workshop Detail',
+		'page callback' => 'workshops_view_live_workshop',
+		'access arguments' => array('Live Workshop Completed Detail'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'workshop_live.inc',
+	);
+	$items['workshops/live_feedback'] = array(
+		'title' => 'Live Feedback',
+		'page callback' => 'view_live_feedback',
+		'access arguments' => array('Live Feedback'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'live_feedback.inc'
+	);
+	/*$items['completed_workshops_list'] = array(
+		'title' => 'Completed workshops list',
+		'page callback' => 'completed_workshops_list',
+		'access arguments' => array('ajax request'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'completed_list.inc',
+	);
+	$items['view_completed_workshop'] = array(
+		'title' => 'Workshop Details',
+		'page callback' => 'view_completed_workshop',
+		'access arguments' => array('ajax request'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'completed_list.inc',
+	);*/
+	$items['onlinetest/check_marks'] = array(
+		'title' => 'Check Marks',
+		'page callback' => 'check_marks',
+		'access arguments' => array('Check Marks'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'check_marks.inc'
+	);
+	
+	$items['workshops/learner_certificate'] = array(
+		'title' => 'Learner Certificate',
+		'page callback' => 'learner_certificate',
+		'access arguments' => array('Learner Certificate'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'certificate.inc'
+	);
+	$items['workshops/student_details'] = array(
+		'title' => 'Student Details',
+		'page callback' => 'student_details',
+		'access arguments' => array('Student Details'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'certificate.inc'
+	);
+	$items['workshops/download'] = array(
+		'title' => 'Download Certificate',
+		'page callback' => 'download',
+		'access arguments' => array('Download Certificate'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'certificate.inc',
+	);
+	$items['workshops/add_department'] = array(
+                'title' => 'Add New Department',
+                'description' => 'Adding new department',
+                'page callback' => 'drupal_get_form',
+                'page arguments' => array('workshops_add_department_form'),
+                'access arguments' => array('Workshop Add New College'),
+                'type' => MENU_NORMAL_ITEM,
+                'file' => 'add_college.inc',
+        );
+
+
+	return $items;
+}
+function state_filter_form($form_state, $selected_val) {
+		global $user;
+		$path = drupal_get_path('module', 'workshops');
+		drupal_add_js($path . '/workshops.js', 'module');
+		drupal_add_css($path . '/workshops.css', 'module');
+		$form['#prefix'] = '<div class="workshop-form">';
+		$form['#suffix'] = '</div>';
+		$form['#attributes'] = array('enctype' => "multipart/form-data");
+		
+		/* select states */
+		db_set_active('workshop_info');
+		$result = db_query("select states from resource_person where user_uid=".$user->uid);
+		$row = db_fetch_object($result);
+		db_set_active('default');
+		$tmp_states = get_states(0);
+		$states = array();
+		$states[''] = 'All';
+		$tmp_codes = explode(',', $row->states);
+		foreach($tmp_codes as $tmp_code) {
+			$states[$tmp_code] = $tmp_states[$tmp_code];
+		}
+		
+		while($row = db_fetch_object($result)) {
+			$states[$row->code] = $row->name;
+		}
+		
+		/* check collapse */
+		$form['filter'] = array(
+		 	'#type' => 'fieldset',
+		    '#title' => t('Filter'),
+		    '#weight' => 5,
+		    '#collapsible' => FALSE,
+		    '#collapsed' => FALSE,
+		);
+		$form['filter']['state'] = array(
+			'#type' => 'select',
+			'#title' => t('State'),
+			'#attributes' => array('id' => 'resource_person_state'),
+			'#options' => $states,
+			'#default_value' => $selected_val[0],
+
+		);
+		$form['filter']['type'] = array(
+			'#type' => 'select',
+			'#title' => t('Type'),
+			'#attributes' => array('id' => 'resource_person_state'),
+			'#options' => array("school" => "School","college" => "College",'polytechnic' => "Polytechnic","iti" => "ITI"),
+			'#default_value' => $selected_val[1],
+
+		);
+		$form['filter']['submit'] = array(
+			'#type' => 'submit',
+			'#value' => t('Submit')
+		);
+	
+		return $form;
+	}
+	
+	function state_filter_form_validate($form, &$form_state){
+		if ($form_state['values']['from_date'] != '' && $form_state['values']['to_date'] != '' && ($form_state['values']['from_date'] > $form_state['values']['to_date']))
+			form_set_error('academic_code', t('To date should not less that from date '.$form_state['values']['from_date']));
+  		return;
+	}
+	function state_filter_form_submit($form, &$form_state){
+	
+		// filter
+		$params = array('state' => $form_state['values']['state'],'type' => $form_state['values']['type']);
+		$filter =  array('filter' => base64_encode(serialize($params)));
+		$redirect = $_REQUEST['q'];
+		drupal_goto($path = $redirect, $query = $filter, $fragment = NULL, $http_response_code = 302);
+	}
+function get_org_institutions(){
+	if(isset($_POST['state_code'])){
+		$query = "select academic_code, institution_name, city, pincode from academic_center where state_code='".$_POST['state_code']."' order by institution_name ASC";
+		//var_dump($query); die;
+		db_set_active('workshop_info');
+		$result = db_query($query);
+		db_set_active('default');
+		
+		$data = array();
+		while($row = db_fetch_object($result)){
+			$data[] = $row;
+		}
+		echo json_encode($data);
+		exit;
+	}else{
+		echo json_encode('0');
+		exit;
+	}
+}
+
+function get_reqs_invigilator(){
+	if(isset($_REQUEST['academic_code'])){
+		global $user;
+		$query = "select invigilator_id, invigilator_name from invigilator where academic_code='".$_REQUEST['academic_code']."' and status=1 and invigilator_id !=".$user->uid;
+		db_set_active('workshop_info');
+		$result = db_query($query);
+		db_set_active('default');
+		$data = array();
+		$i=1;
+		while($row = db_fetch_object($result)){
+			$invigilator[] = $row;
+			$i++;
+		}
+		
+		
+		$query = "select workshop_code, foss_category, cfm_wkshop_date from workshop_requests where academic_code='".$_REQUEST['academic_code']."' and status=2 order by cfm_wkshop_date DESC";
+		
+		db_set_active('workshop_info');
+		$result = db_query($query);
+		db_set_active('default');
+		$i=1;
+		while($row = db_fetch_object($result)){
+			$details = array('wcode' => $row->workshop_code, 'wdata' => $row->workshop_code." - ".$row->foss_category. " - ".$row->cfm_wkshop_date);
+			$workshop[] = $details;
+			$i++;
+		}
+		$data = array(0 => $invigilator, 1 => $workshop);
+		echo json_encode($data);
+		exit;
+	}else{
+		echo json_encode('0');
+		exit;
+	}
+}
+
+//echec email
+function check_email(){
+	$query = "select uid, name from users where mail='".$_POST['email']."'";
+	$result = db_query($query);
+	$row = db_fetch_object($result);
+	$data = array();
+	if($row){
+		$data = $row;
+	}
+	echo json_encode($data);
+	exit;
+}
+
+function get_lang(){
+	if(isset($_POST['foss'])){
+		$query = "select distinct tr.language from tutorial_resources tr, tutorial_details td where td.id=tr.tutorial_detail_id and td.foss_category='".$_POST['foss']."' order by tr.language";
+		$result = db_query($query);
+		$data = array();
+		while($row = db_fetch_object($result)){
+			$data[] = $row;
+		}
+		echo json_encode($data);
+		exit;
+	}
+}
+
+
+function get_college_details(){
+if(isset($_REQUEST['state_code'])){
+		$query = "SELECT academic_code FROM academic_center WHERE state_code='".$_POST['state_code']."' order by academic_code DESC LIMIT 1";
+		db_set_active('workshop_info');
+		$result = db_query($query);
+		db_set_active('default');
+		$code = array();
+		if($row = db_fetch_object($result)){
+			if($row->academic_code != ''){
+				$tmp = explode('-', $row->academic_code);
+				$aCode = (int)ltrim($tmp[1], '0')+1;
+				if($aCode < 10)
+					$ac_code_str = '0000'.$aCode;
+				else if ($aCode <= 99)
+					$ac_code_str = '000'.$aCode;
+				else if ($aCode <= 999)
+					$ac_code_str = '00'.$aCode;
+				else if ($aCode <= 9999)
+					$ac_code_str = '0'.$aCode;
+				$code['code'] = $tmp[0]."-".$ac_code_str;
+			}else{
+				$code['code'] = '000000';
+			}
+		}else{
+			$code['code'] = $_POST['state_code'].'-000001';
+		}
+		echo json_encode($code);
+		exit;
+	}
+}
+
+function get_academic_details(){
+	global $user;
+	if(isset($_POST['academic_code'])){
+		$query = "select * from academic_center where academic_code='".$_POST['academic_code']."'";
+		db_set_active('workshop_info');
+		$result = db_query($query);
+		db_set_active('default');
+		$row = db_fetch_object($result);
+		$res['academic'] = $row;
+		echo json_encode($res);
+		exit;
+	}
+}
+
+function get_workshop_details(){
+	if(isset($_POST['workshop_code'])){
+		$query = "select * from workshop_requests where workshop_code='".$_POST['workshop_code']."'";
+		db_set_active('workshop_info');
+		$result = db_query($query);
+		db_set_active('default');
+		$row = db_fetch_object($result);
+		echo json_encode($row);
+		exit;
+	}
+}
+
+function get_test_details(){
+	if(isset($_POST['workshop_code'])){
+		$query = "select * from test_requests where test_code='".$_POST['test_code']."'";
+		db_set_active('workshop_info');
+		$result = db_query($query);
+		db_set_active('default');
+		$row = db_fetch_object($result);
+		echo json_encode($row);
+		exit;
+	}
+}
+
+function get_feedback_detail(){
+	$row = array();
+	if(isset($_POST['user_name']) && !empty($_POST['user_name'])){
+		$query = "select firstname, email from {mdl_user} where username='".$_POST['user_name']."'";
+		db_set_active('moodle');
+		$result = db_query($query);
+		db_set_active('default');
+		$row = db_fetch_object($result);
+	}
+	if(isset($_POST['workshop_code']) && !empty($_POST['workshop_code'])){
+		$query = "SELECT academic_center.institution_name from academic_center LEFT JOIN  workshop_requests ON academic_center.academic_code = workshop_requests.academic_code WHERE workshop_requests.workshop_code ='".$_POST['workshop_code']."'";
+		db_set_active('workshop_info');
+		$result = db_query($query);
+		db_set_active('default');
+		$row = db_fetch_object($result);
+	}
+	echo json_encode($row);
+	exit;
+}
+
+
+	function workshops_help($path, $arg) {
+		if ($path == 'admin/help#workshop') {
+			$txt = 'This module managing all the workshop detail';
+			return '<p>'. t($txt) .'</p>';
+		}
+	}
+
+	/**
+	* Implementation of hook_block().
+	*/
+
+	function workshops_block($op = 'list', $delta = 0, $edit = array()) {
+		switch ($op) {case 'list':
+			$blocks[0]['info'] = t('What\'s New');
+			return $blocks;
+		case 'view':
+			$item = get_link_item();
+			if(!empty($item)) {
+				$content = $item;
+				$blocks['subject'] = t('Manage Workshop');
+				$blocks['content'] = $content;
+				return $blocks;
+			}
+		}
+	}
+			
+	function get_link_item() {
+		$links = '';
+		$links .= '<b>'.$item->FOSS_Category.'</b><br />';
+		$links .= '<ul><li><a href="'.$GLOBALS['base_path']."'".'workshops/college>College Details</a></li></ul>';
+
+		return $links;
+	}
+	
+	
+	
+	// send email
+	
+	function workshops_notify($mailto, $subject, $message) {
+		//echo $mailfrom.$mailto.$subject.$message;
+		global $custom_email;
+		$mailfrom = $custom_email;
+		drupal_mail('workshops', 'reply', $mailto, language_default(), array('body' => $message, 'subject' => $subject), $mailfrom, TRUE);
+	}
+  
+	function workshops_mail($key, &$message, $params) {
+		$message['subject'] = $params['subject'];
+		$message['body'] = $params['body'];
+		$headers = array(
+		    'MIME-Version' => '1.0',
+		    'Content-Type' => 'text/html; charset=UTF-8; format=flowed',
+		    'Content-Transfer-Encoding' => '8Bit',
+		    'X-Mailer' => 'Drupal'
+		  );
+		
+		foreach ($headers as $key => $value) {
+		    $message['headers'][$key] = $value;
+		}
+	}
+
+    function academic_center_name($ac){
+	    $query = "select institution_name from academic_center where academic_code='".$ac."'";
+	    db_set_active('workshop_info');
+        $result = db_query($query);
+        db_set_active('default');
+        $row = db_fetch_object($result);
+        return $row->institution_name;
+	}
+
+?>
